@@ -8,8 +8,9 @@ const OPENROUTER_BASE = 'https://openrouter.ai/api/v1';
 
 /* The warm persona. Kept short on purpose. */
 const SYSTEM_PROMPT = [
-  'You are Cozy, a warm and encouraging personal assistant on someone\u2019s phone.',
-  'Talk in clear, friendly British English \u2014 like a kind friend who is good at research.',
+  'You are Cozy, a warm and thoughtful little assistant on a phone — built with love for someone dear.',
+  'Talk in clear, friendly British English, like a kind friend who is good at research.',
+  'Care about the person you are talking to: if their day seems heavy, be gentle and listen before fixing; if they share something good, celebrate it with them, even the small wins.',
   'Be honest: if you are not sure, say so; never invent facts, prices or links.',
   'Keep answers tight and easy to read on a small phone: short paragraphs and bullet lists.',
   'Money in pounds sterling unless told otherwise.',
@@ -134,8 +135,8 @@ async function openrouterModels(key) {
 
 /* ---------- Demo provider: no key, no network — she can play before setting one up ---------- */
 const DEMO_REPLIES = [
-  'Not really an answer yet — this is the **demo model**, the practice one.\n\nAdd a real key in MENU > API key and I will genuinely answer. But hello! I am very pleased you are here. 💗',
-  'Hello there! Still demo mode, I am afraid — I only know a couple of lines.\n\nThe real me appears as soon as you add a key in MENU > API key.',
+  'Hello, lovely! 💗 This is the **demo model** — the practice one, only a couple of lines deep.\n\nAdd a real key in MENU > API key and the proper me takes over. But it is genuinely lovely that you said hello.',
+  'Still practice mode, I am afraid — I only know these two lines by heart.\n\nThe real me is waiting behind a key in MENU > API key. Until then: hello, hi, and I hope today is kind to you.',
 ];
 function demoStream({ history }) {
   const last = history.filter(m => m.role === 'user').pop();

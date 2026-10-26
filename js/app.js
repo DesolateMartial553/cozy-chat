@@ -37,8 +37,8 @@ function renderGreeting() {
     <div class="cat">  /\\_/\\
  ( ^.^ )
   > ^ <</div>
-    <div class="greet">hello, you.</div>
-    <div class="sub">a quiet place to think · everything stays on your phone</div>`;
+    <div class="greet">hello, you. ♡</div>
+    <div class="sub">a quiet little corner made just for you · everything stays on your phone</div>`;
   chat.appendChild(el);
 }
 
@@ -66,9 +66,10 @@ function renderAll() {
 /* a first thing to try, shown as a reply line so the page never looks empty */
 function notepadHint() {
   const body = addMsg('ai',
-    '**So, how is your day going?**\n\n'
-    + 'I can help with plans, recipes, homework questions, gift ideas, '
-    + 'or anything you fancy looking up. Tap a message and just speak in your own words.');
+    '**Hello, lovely — how is your day going?**\n\n'
+    + 'I can help with plans, recipes, revision questions, gift ideas, or simply keep '
+    + 'you company while you think out loud. Type in your own words — there is no '
+    + 'wrong way to talk to me.');
   body.parentElement.dataset.hint = '1';
 }
 
@@ -88,7 +89,7 @@ async function send() {
   const text = input.value.trim();
   if (!text || busy) return;
 
-  if (!state.key && state.provider !== 'demo') { openMenu('key'); flash('Add your API key first — one tap, once.', 'warn'); return; }
+  if (!state.key && state.provider !== 'demo') { openMenu('key'); flash('One small thing before we chat — add your key (a minute, once).', 'warn'); return; }
   if (!state.model) {
     flash('Choosing a model for you…', 'warn');
     try { await pickDefaultModel(); } catch { openMenu('model'); return; }
@@ -208,12 +209,12 @@ const VIEWS = {
   about() {
     return `
       <div class="note">
-        <b>Cozy</b> — a tiny, private AI chat for a phone.<br><br>
+        <b>Cozy</b> — a tiny, private AI chat, made for someone dear.<br><br>
         · Your chat and your key are saved only on this phone.<br>
-        · The AI provider sees your messages (it answers them), nothing else sees them.<br>
-        · To put Cozy on your home screen: <b>⋮ menu → “Add to Home screen”</b> in Chrome.<br>
-        · To upload a photo of something you want discussed — not yet! Ask the person who built this.<br>
-        · Built with love, in Birmingham.
+        · Messages you send go to whichever AI you connect (it is who answers), and nowhere else.<br>
+        · Home screen: <b>⋮ menu → “Add to Home screen”</b> in Chrome.<br>
+        · Want to send a photo? Not yet — but it is coming. Tell the person who gave you this icon.<br>
+        · Made with love (and a fair few late nights), in Birmingham.
       </div>
       ${sheetFooter('about')}`;
   },
@@ -260,7 +261,7 @@ $('sheetBody').addEventListener('click', async (ev) => {
     state.provider = prv;                // the saved key belongs to this provider
     state.key = key; state.model = '';
     save(); closeSheet();
-    flash('Key saved. Choosing a quick model…');
+    flash('Key saved safely. Choosing a quick model for you…');
     try { await pickDefaultModel(); } catch { openSheet('model'); }
     return;
   }

@@ -1,7 +1,7 @@
 {
-  "name": "Cozy — a quiet place to think",
+  "name": "Cozy — made for you",
   "short_name": "Cozy",
-  "description": "A warm, private little AI chat. Made with love.",
+  "description": "A warm, private little AI chat. Made with love, for someone dear.",
   "lang": "en-GB",
   "start_url": "./index.html",
   "scope": "./",

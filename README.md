@@ -1,8 +1,8 @@
 # Cozy 💗
 
-A tiny, private AI chat for a phone, for someone special. The look comes from the
-cozy mockup: a soft pink bar with pill buttons, a warm dark-plum screen, a little
-cat when it opens, and "hello, you."
+A tiny, private AI chat for a phone, made with love for someone dear. The look
+comes from the cozy mockup: a soft pink bar with pill buttons, a warm dark-plum
+screen, a little cat when it opens, and "hello, you. ♡"
 
 It is a **PWA** — a web app she installs with "Add to Home screen", so it gets a
 real app icon and opens fullscreen like an app. No Play Store, no APK.
