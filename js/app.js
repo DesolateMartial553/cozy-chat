@@ -38,7 +38,7 @@ function renderGreeting() {
  ( ^.^ )
   > ^ <</div>
     <div class="greet">hello, you. ♡</div>
-    <div class="sub">no noise, no rush — your words stay right here on your phone</div>`;
+    <div class="sub">just us in here, princess</div>`;
   chat.appendChild(el);
 }
 
