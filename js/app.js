@@ -66,10 +66,10 @@ function renderAll() {
 /* a first thing to try, shown as a reply line so the page never looks empty */
 function notepadHint() {
   const body = addMsg('ai',
-    '**Hello, lovely — how is your day going?**\n\n'
-    + 'I can help with plans, recipes, revision questions, gift ideas, or simply keep '
-    + 'you company while you think out loud. Type in your own words — there is no '
-    + 'wrong way to talk to me.');
+    '**Hello, lovely. Welcome to your little corner.** 💗\n\n'
+    + '• **To keep me on your home screen:** tap `⋮` (top right in Chrome) → **Add to Home screen**. No app stores needed.\n\n'
+    + '• **To chat for real:** tap **MENU › API key** and pop your key in. Until then, I am in practice mode and happy to keep you company.\n\n'
+    + 'Type whatever you like in the box below whenever you are ready.');
   body.parentElement.dataset.hint = '1';
 }
 
@@ -209,11 +209,10 @@ const VIEWS = {
   about() {
     return `
       <div class="note">
-        <b>Cozy</b> — a tiny, private AI chat, made for someone dear.<br><br>
-        · Your chat and your key are saved only on this phone.<br>
-        · Messages you send go to whichever AI you connect (it is who answers), and nowhere else.<br>
-        · Home screen: <b>⋮ menu → “Add to Home screen”</b> in Chrome.<br>
-        · Want to send a photo? Not yet — but it is coming. Tell the person who gave you this icon.<br>
+        <b>Cozy</b> — a tiny, private AI chat, made for someone dear. 💗<br><br>
+        · <b>Keep it on your phone:</b> Tap the menu (three dots <b>⋮</b> top right in Chrome) and choose <b>“Add to Home screen”</b> or <b>“Install”</b>. It gets its own icon on your home screen.<br>
+        · <b>How to set up:</b> It starts in practice mode. When you want the real AI, tap <b>MENU › API key</b> and paste the key set up for you.<br>
+        · <b>Privacy:</b> Your chats stay saved on your phone. Nothing leaves unless you press send to the AI.<br>
         · Made with love (and a fair few late nights), in Birmingham.
       </div>
       ${sheetFooter('about')}`;

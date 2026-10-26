@@ -26,6 +26,29 @@ cozy-chat/
 4. First run: **MENU > API key** → pick the provider, paste your key, **Save**.
    That is the only setup. The key stays in her phone's storage; the repo never has it.
 
+## For her — how to use your little corner 💗
+
+Hello, lovely. This is yours, and it is simple on purpose.
+
+- **Put me on your home screen.** Open this page in Chrome, tap the three dots
+  (⋮) at the top right, then **Add to Home screen** → **Install**. From then on
+  I am a little cat icon, one tap away — no browser bars, no faff.
+- **Come and talk whenever you like.** Type in the box at the bottom in your own
+  words. Plans, recipes, revision questions, gift ideas, half-formed thoughts at
+  midnight — all welcome. There is no wrong way to talk to me.
+- **Make it the real thing.** It starts in practice mode, with only a couple of
+  lines. When you want the proper AI, tap **MENU › API key** and paste the key
+  you were given. One minute, once, and you never have to think about it again.
+- **Start fresh whenever.** **+ NEW** at the top wipes the chat and gives you a
+  clean page. Nothing is thrown away by accident — it asks first.
+- **Your words are yours.** The conversation stays saved on your phone. It only
+  travels when you press send, and only to the AI you connected. Nothing else is
+  watching, and there is no account to make.
+- **If something feels off** — a button that will not work, a reply that looks
+  strange — tell the person who gave you this. He will be glad to fix it.
+
+Made with love, late at night, in Birmingham.
+
 ## The key (read this)
 
 - Default provider is **Google Gemini** — free key from
