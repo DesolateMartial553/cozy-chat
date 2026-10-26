@@ -124,13 +124,22 @@ async function* openrouterStream({ key, model, history, signal }) {
   }
 }
 
-async function openrouterModels(key) {
-  const res = await fetch(`${OPENROUTER_BASE}/models`, {
-    headers: key ? { Authorization: `Bearer ${key}` } : {},
-  });
+async function openrouterModels() {
+  /* the catalogue is public: no key needed, so the list loads before setup too */
+  const res = await fetch(`${OPENROUTER_BASE}/models`);
   if (!res.ok) throw new Error(await readError(res));
   const j = await res.json();
   return (j.data || []).map(m => m.id).filter(id => id.endsWith(':free')).sort();
+}
+
+/* a real key check: /models says nothing about the key, /key does */
+async function openrouterKeyCheck(key) {
+  const res = await fetch(`${OPENROUTER_BASE}/key`, {
+    headers: { Authorization: `Bearer ${key}` },
+  });
+  if (!res.ok) throw new Error(await readError(res));
+  const j = await res.json();
+  return j.data || {};
 }
 
 /* ---------- Demo provider: no key, no network — she can play before setting one up ---------- */
@@ -166,6 +175,16 @@ function providerOf(name) {
 /* quick key check used by the key screen */
 async function testKey(provider, key) {
   try {
+    if (provider === 'demo') return { ok: true, msg: 'Practice mode — no key needed.', firstModel: 'cozy-demo' };
+
+    if (provider === 'openrouter') {
+      const info = await openrouterKeyCheck(key);          // the only honest test
+      const ids = await openrouterModels();
+      if (!ids.length) return { ok: false, msg: 'The key works, but no free models are listed right now. Try again shortly.' };
+      const label = info.label ? ` (${info.label})` : '';
+      return { ok: true, msg: `Key works${label}.`, firstModel: ids[0] };
+    }
+
     const ids = await providerOf(provider).models(key);
     if (!ids.length) return { ok: false, msg: 'The key works, but no usable models came back. Try the other provider.' };
     return { ok: true, msg: 'Key works.', firstModel: ids[0] };

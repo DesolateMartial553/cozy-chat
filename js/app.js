@@ -211,7 +211,7 @@ function sheetFooter(view) {
 
 const PROVIDER_NOTE = {
   gemini: 'Google gives a free key at <b>aistudio.google.com/apikey</b> (needs a Google account).',
-  openrouter: 'OpenRouter gives free models; get a key at <b>openrouter.ai/keys</b>.',
+  openrouter: 'One key, many models — the free ones end in <b>:free</b>. Sign in with Google or GitHub at <b>openrouter.ai/keys</b>.',
   demo: 'No key needed — practice mode with two canned replies, to see how it feels.',
 };
 
@@ -359,7 +359,7 @@ $('sheetBody').addEventListener('click', async (ev) => {
       list.innerHTML = ids.length
         ? ids.map(id => `<button class="item" data-act="pick" data-model="${esc(id)}"><span>${esc(id)}</span><b>pick</b></button>`).join('')
         : '<div class="note">None found. Check the key, or type the model name in MENU.</div>';
-    } catch (e) { list.innerHTML = `<div class="note">${esc(e.message)}</div>`; }
+    } catch (e) { list.innerHTML = `<div class="note">Could not load the list — ${esc(e.message)}</div>`; }
   }
 });
 
