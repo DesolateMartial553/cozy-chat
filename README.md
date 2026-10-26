@@ -81,6 +81,17 @@ https://desolatemartial553.github.io/cozy-chat/#demo=1          (practice mode, 
 Never put a key in `js/`, `index.html`, the README or a commit: this repo is
 public and GitHub's secret scanning would have Google revoke the key.
 
+**Build a link without typing the URL by hand:**
+
+```bash
+python3 tools/make-link.py                 # Gemini
+python3 tools/make-link.py -p openrouter   # OpenRouter
+python3 tools/make-link.py --demo          # practice mode
+```
+
+It asks for the key with hidden input, keeps it in memory only, and prints the
+link. Nothing is written to disk, so the key cannot end up in a commit.
+
 ## Testing locally
 
 ```bash
