@@ -60,6 +60,27 @@ Made with love, late at night, in Birmingham.
 - Her messages go to the provider you choose (that's who answers them). Nobody
   else — there is no server in this app. "Everything stays on your phone."
 
+### Zero-fuss setup: a setup link
+
+So she never has to paste anything, send her a link that sets Cozy up on first open:
+
+```
+https://desolatemartial553.github.io/cozy-chat/#key=THE_KEY&p=gemini
+https://desolatemartial553.github.io/cozy-chat/#key=THE_KEY&p=openrouter
+https://desolatemartial553.github.io/cozy-chat/#demo=1          (practice mode, no key)
+```
+
+- The key lives **after the `#`**, which browsers never send to a server — not
+  GitHub, not any access log. It is not in the repo, the files, or the site.
+- Cozy tests the key first, saves it on her phone, then **wipes it from the
+  address bar** so it does not sit in her history.
+- A dead key is refused and the setup sheet opens instead; nothing is stored.
+- **Send it privately, to her only.** Anyone who has the link has the key.
+  To undo it: MENU › API key → save a different key, or clear the site's data.
+
+Never put a key in `js/`, `index.html`, the README or a commit: this repo is
+public and GitHub's secret scanning would have Google revoke the key.
+
 ## Testing locally
 
 ```bash

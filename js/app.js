@@ -435,7 +435,47 @@ if ('serviceWorker' in navigator &&
   navigator.serviceWorker.register('sw.js').catch(() => {});   // file:// just skips it
 }
 
+/* ---------- one-tap setup link ----------
+   Send her a link like  https://…/cozy-chat/#key=PASTE_KEY&p=gemini
+   The part after # never reaches a server, so the key stays between you two.
+   It is checked, saved to her phone, then stripped from the address bar. */
+async function setupFromLink() {
+  const raw = location.hash.replace(/^#/, '');
+  if (!raw) return;
+  const q = new URLSearchParams(raw);
+  const key = (q.get('key') || '').trim();
+  const prov = q.get('p') || 'gemini';
+  const wantDemo = q.get('demo') === '1';
+  if (!key && !wantDemo) return;
+
+  /* take it out of the URL immediately — no history, no accidental sharing */
+  history.replaceState(null, '', location.pathname + location.search);
+
+  if (wantDemo) {
+    state.provider = 'demo'; state.model = 'cozy-demo';
+    save(); renderAll();
+    flash('Practice mode is on. 💗 (A real key can come later.)');
+    return;
+  }
+  if (!['gemini', 'openrouter'].includes(prov)) return;
+
+  flash('Setting things up for you — one moment…');
+  const r = await testKey(prov, key);
+  if (!r.ok) {
+    flash(`${r.msg} Ask for a fresh link.`, 'warn');
+    openSheet('key');
+    return;
+  }
+  state.provider = prov;
+  state.key = key;
+  state.model = '';
+  save(); renderAll();
+  flash('All set, lovely — that key is saved on your phone now.');
+  try { await pickDefaultModel(); } catch { openSheet('model'); }
+}
+
 /* ---------- start ---------- */
 ensureChat();          // always have a (possibly empty) current chat
 renderAll();
 input.focus();
+setupFromLink();
