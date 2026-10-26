@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#3a2f42"/>
+      <stop offset="1" stop-color="#241d29"/>
+    </linearGradient>
+  </defs>
+
+  <!-- warm plum tile -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="none" stroke="#4a384f" stroke-width="6"/>
+
+  <!-- soft glow -->
+  <circle cx="256" cy="250" r="150" fill="#f7c6d3" opacity="0.10"/>
+
+  <!-- the little cat -->
+  <g stroke="#ffb3c6" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- ears -->
+    <path d="M150 208 l36 -58 l28 46"/>
+    <path d="M362 208 l-36 -58 l-28 46"/>
+    <!-- head -->
+    <path d="M150 208 q-18 66 34 108 q72 56 144 0 q52 -42 34 -108"/>
+  </g>
+  <!-- face -->
+  <g fill="#ffd9e3">
+    <circle cx="212" cy="252" r="15"/>
+    <circle cx="300" cy="252" r="15"/>
+  </g>
+  <g stroke="#ffd9e3" stroke-width="12" stroke-linecap="round">
+    <path d="M238 292 q18 20 36 0"/>
+  </g>
+  <!-- blush -->
+  <circle cx="188" cy="288" r="12" fill="#e79fb2" opacity="0.7"/>
+  <circle cx="324" cy="288" r="12" fill="#e79fb2" opacity="0.7"/>
+
+  <!-- the flower -->
+  <g transform="translate(392 400)">
+    <g fill="#ff9db8">
+      <ellipse cx="0" cy="-26" rx="11" ry="20"/>
+      <ellipse cx="0" cy="26" rx="11" ry="20"/>
+      <ellipse cx="-26" cy="0" rx="20" ry="11"/>
+      <ellipse cx="26" cy="0" rx="20" ry="11"/>
+      <ellipse cx="-18" cy="-18" rx="14" ry="14"/>
+      <ellipse cx="18" cy="-18" rx="14" ry="14"/>
+      <ellipse cx="-18" cy="18" rx="14" ry="14"/>
+      <ellipse cx="18" cy="18" rx="14" ry="14"/>
+    </g>
+    <circle cx="0" cy="0" r="13" fill="#ffe6a7"/>
+  </g>
+</svg>

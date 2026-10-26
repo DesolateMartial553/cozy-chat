@@ -1,0 +1,17 @@
+{
+  "name": "Cozy — a quiet place to think",
+  "short_name": "Cozy",
+  "description": "A warm, private little AI chat. Made with love.",
+  "lang": "en-GB",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2b2230",
+  "theme_color": "#f7c6d3",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
