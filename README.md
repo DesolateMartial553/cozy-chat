@@ -39,8 +39,9 @@ Hello, lovely. This is yours, and it is simple on purpose.
 - **Make it the real thing.** It starts in practice mode, with only a couple of
   lines. When you want the proper AI, tap **MENU › API key** and paste the key
   you were given. One minute, once, and you never have to think about it again.
-- **Start fresh whenever.** **+ NEW** at the top wipes the chat and gives you a
-  clean page. Nothing is thrown away by accident — it asks first.
+- **Start fresh whenever.** **+ NEW** at the top gives you a clean page — and the
+  old conversation quietly tucks itself away. **MENU › Chats** keeps them all;
+  tap one to carry on where you left off, tap the little ✕ to let one go.
 - **Your words are yours.** The conversation stays saved on your phone. It only
   travels when you press send, and only to the AI you connected. Nothing else is
   watching, and there is no account to make.

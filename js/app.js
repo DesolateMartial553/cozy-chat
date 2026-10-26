@@ -3,11 +3,63 @@
 
 /* ---------- state (localStorage only) ---------- */
 const STORE = 'cozy-chat-v1';
-const state = Object.assign(
-  { provider: 'gemini', key: '', model: '', messages: [] },
-  JSON.parse(localStorage.getItem(STORE) || '{}')
-);
-function save() { localStorage.setItem(STORE, JSON.stringify(state)); }
+
+function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function titleOf(messages) {
+  const first = messages.find(m => m.role === 'user');
+  return first ? first.text.replace(/\s+/g, ' ').trim().slice(0, 48) : '';
+}
+
+const savedRaw = JSON.parse(localStorage.getItem(STORE) || '{}');
+const state = {
+  provider: savedRaw.provider || 'gemini',
+  key: savedRaw.key || '',
+  model: savedRaw.model || '',
+  chats: Array.isArray(savedRaw.chats) ? savedRaw.chats : [],
+  currentId: savedRaw.currentId || '',
+  messages: [],
+};
+/* migration from the one-chat version: wrap its messages in a saved chat */
+if (!state.chats.length && Array.isArray(savedRaw.messages) && savedRaw.messages.length) {
+  state.chats = [{
+    id: newId(), title: titleOf(savedRaw.messages),
+    created: Date.now(), updated: Date.now(), messages: savedRaw.messages,
+  }];
+  state.currentId = state.chats[0].id;      // it becomes the chat she is in
+}
+state.chats.forEach(c => { c.messages = c.messages || []; });
+
+/* keep max this many conversations, and never lose the one being used */
+const MAX_CHATS = 40;
+
+function currentChat() { return state.chats.find(c => c.id === state.currentId) || null; }
+function ensureChat() {
+  let c = currentChat();
+  if (!c) {
+    c = { id: newId(), title: '', created: Date.now(), updated: Date.now(), messages: [] };
+    state.chats.unshift(c);
+    state.currentId = c.id;
+  }
+  state.messages = c.messages;               // one array, shared
+  return c;
+}
+function touchChat() {
+  const c = ensureChat();
+  c.updated = Date.now();
+  if (!c.title) c.title = titleOf(c.messages);
+}
+function save() {
+  if (currentChat()) currentChat().messages = state.messages;
+  state.chats.sort((a, b) => b.updated - a.updated);
+  while (state.chats.length > MAX_CHATS) {
+    const old = state.chats.pop();            // pop drops the oldest (list is newest-first)
+    if (old.id === state.currentId) { state.chats.unshift(old); break; }
+  }
+  localStorage.setItem(STORE, JSON.stringify({
+    provider: state.provider, key: state.key, model: state.model,
+    chats: state.chats, currentId: state.currentId,
+  }));
+}
 
 const $ = id => document.getElementById(String(id).replace(/^#/, ''));
 const chat = $('chat'), input = $('input');
@@ -69,7 +121,8 @@ function notepadHint() {
     '**Hello, lovely. Welcome to your little corner.** 💗\n\n'
     + '• **To keep me on your home screen:** tap `⋮` (top right in Chrome) → **Add to Home screen**. No app stores needed.\n\n'
     + '• **To chat for real:** tap **MENU › API key** and pop your key in. Until then, I am in practice mode and happy to keep you company.\n\n'
-    + 'Type whatever you like in the box below whenever you are ready.');
+    + 'Type whatever you like in the box below whenever you are ready — and do not '
+    + 'worry about keeping track: every chat keeps itself in MENU › Chats.');
   body.parentElement.dataset.hint = '1';
 }
 
@@ -99,7 +152,7 @@ async function send() {
 
   state.messages.push({ role: 'user', text });
   addMsg('user', text);
-  input.value = ''; save();
+  input.value = ''; touchChat(); save();
 
   busy = true; $('btnSend').disabled = true;
   const body = addMsg('ai', '', true);
@@ -120,7 +173,7 @@ async function send() {
     }
     if (!full.text.trim()) full.text = '…it went quiet. Try again?';
     body.innerHTML = mdLite(full.text);
-    state.messages.push(full); save();
+    state.messages.push(full); touchChat(); save();
   } catch (e) {
     if (e.name === 'AbortError') {
       body.innerHTML = mdLite(full.text || '(stopped)');
@@ -164,13 +217,35 @@ const PROVIDER_NOTE = {
 
 const VIEWS = {
   main() {
+    const savedChats = state.chats.filter(c => c.messages.length).length;
     return `
+      <button class="item" data-view="chats">  <span>Chats</span>       <b>${savedChats}</b></button>
       <button class="item" data-view="key">    <span>API key</span>    <b>${state.key ? 'saved ✓' : 'needed'}</b></button>
       <button class="item" data-view="model">  <span>Model</span>      <b>${state.model ? esc(state.model).slice(0, 18) : 'pick'}</b></button>
       <button class="item" data-view="about">  <span>About / help</span><b>?</b></button>
-      <button class="item danger" data-act="clear"> <span>Clear the chat</span> <b>x</b></button>
-      <div class="note">Everything (chat + key) lives in this browser on this phone only.
-        Backup = none; clearing the app\'s site data resets Cozy.</div>`;
+      <button class="item danger" data-act="delCurrent"> <span>Delete this chat</span> <b>x</b></button>
+      <div class="note">Your chats and key live in this browser on this phone only.
+        Everything you talk about is kept in <b>Chats</b>, so a new chat never loses an old one.</div>`;
+  },
+
+  chats() {
+    const list = state.chats.filter(c => c.messages.length);
+    const rows = list.map(c => {
+      const title = c.title ? esc(c.title) : '<i>a quiet little chat</i>';
+      const here = c.id === state.currentId ? ' <b>·now</b>' : '';
+      return `<div class="chatrow">
+        <button class="item grow" data-act="openChat" data-chat="${c.id}">
+          <span>${title}${here}</span><b>${whenLabel(c.updated)}</b>
+        </button>
+        <button class="item del" data-act="delChat" data-chat="${c.id}" aria-label="delete this chat">✕</button>
+      </div>`;
+    }).join('');
+    return `
+      <div class="note">Everything you have talked about, kept here on your phone.
+        Tap one to carry on where you left off.</div>
+      ${rows || '<div class="note">Nothing saved yet — your first chat will appear here, and stay.</div>'}
+      <div class="row"><button class="pill ok" data-act="newChat">+ a fresh chat</button></div>
+      ${sheetFooter('chats')}`;
   },
 
   key() {
@@ -213,6 +288,7 @@ const VIEWS = {
         · <b>Keep it on your phone:</b> Tap the menu (three dots <b>⋮</b> top right in Chrome) and choose <b>“Add to Home screen”</b> or <b>“Install”</b>. It gets its own icon on your home screen.<br>
         · <b>How to set up:</b> It starts in practice mode. When you want the real AI, tap <b>MENU › API key</b> and paste the key set up for you.<br>
         · <b>Privacy:</b> Your chats stay saved on your phone. Nothing leaves unless you press send to the AI.<br>
+        · <b>Everything is kept:</b> MENU › Chats holds your conversations — start a new one as often as you like, nothing old is lost.<br>
         · Made with love (and a fair few late nights), in Birmingham.
       </div>
       ${sheetFooter('about')}`;
@@ -224,9 +300,19 @@ $('sheetBody').addEventListener('click', async (ev) => {
   const actPill = ev.target.closest('[data-act]');
   const viewBtn = ev.target.closest('[data-view]');
   if (viewBtn) { openSheet(viewBtn.dataset.view); return; }
-  if (actPill && actPill.dataset.act === 'clear') {
-    if (confirm('Clear the whole chat? (This cannot be undone.)')) {
-      state.messages = []; save(); renderAll(); closeSheet();
+  if (actPill && actPill.dataset.act === 'openChat') {
+    openChatById(actPill.dataset.chat);
+    return;
+  }
+  if (actPill && actPill.dataset.act === 'newChat') { startNewChat(); return; }
+  if (actPill && actPill.dataset.act === 'delChat') {
+    if (confirm('Let this chat go? It cannot be brought back.')) deleteChat(actPill.dataset.chat);
+    else openSheet('chats');
+    return;
+  }
+  if (actPill && actPill.dataset.act === 'delCurrent') {
+    if (confirm('Let this chat go? It cannot be brought back.')) {
+      deleteChat(state.currentId);
     }
     return;
   }
@@ -286,12 +372,51 @@ function postRender() {
   };
 }
 
+/* ---------- chats: open, start fresh, delete ---------- */
+function whenLabel(ts) {
+  const d = new Date(ts), now = new Date();
+  const days = Math.floor((now - d) / 86400000);
+  if (days <= 0) return 'today';
+  if (days === 1) return 'yesterday';
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+function openChatById(id) {
+  save();
+  const c = state.chats.find(c => c.id === id);
+  if (!c) return;
+  state.currentId = id;
+  state.messages = c.messages;
+  save(); renderAll(); closeSheet();
+}
+function startNewChat() {
+  save();
+  const c = { id: newId(), title: '', created: Date.now(), updated: Date.now(), messages: [] };
+  state.chats.unshift(c);
+  state.currentId = c.id;
+  state.messages = c.messages;
+  save(); renderAll(); closeSheet(); input.focus();
+  flash('A fresh page — the old chat is kept in MENU › Chats.');
+}
+function deleteChat(id) {
+  const c = state.chats.find(c => c.id === id);
+  state.chats = state.chats.filter(c => c.id !== id);
+  if (state.currentId === id) {           // start a clean page after removing this one
+    const fresh = { id: newId(), title: '', created: Date.now(), updated: Date.now(), messages: [] };
+    state.chats.unshift(fresh);
+    state.currentId = fresh.id;
+    state.messages = fresh.messages;
+    renderAll();
+  }
+  save();
+  flash(c && c.title ? `“${c.title.slice(0, 24)}” is gone.` : 'Chat deleted.');
+  if (!$('sheetWrap').hidden) openSheet('chats');
+}
+
 /* ---------- header buttons ---------- */
 $('btnMenu').addEventListener('click', () => openSheet('main'));
 $('btnNew').addEventListener('click', () => {
-  if (!state.messages.length) return;
-  state.messages = []; save(); renderAll();
-  $('barTitle').textContent = 'cozy ✿';
+  if (!state.messages.length) return;      // already a clean page
+  startNewChat();
 });
 document.querySelectorAll('[data-close]').forEach(el =>
   el.addEventListener('click', closeSheet));
@@ -311,5 +436,6 @@ if ('serviceWorker' in navigator &&
 }
 
 /* ---------- start ---------- */
+ensureChat();          // always have a (possibly empty) current chat
 renderAll();
 input.focus();
