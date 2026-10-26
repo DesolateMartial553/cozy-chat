@@ -1,6 +1,6 @@
 /* Cozy service worker — keep the shell on the phone so it opens with no signal.
    Our own files only; the AI provider's answers are never cached here. */
-const CACHE = 'cozy-shell-v2';
+const CACHE = 'cozy-shell-v3';
 const SHELL = [
   './',
   './index.html',
